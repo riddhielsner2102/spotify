@@ -1,0 +1,32 @@
+# Use an official Node.js runtime as a parent image
+FROM node:14 as build
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy package.json and package-lock.json to the working directory
+COPY package*.json ./
+
+# Install project dependencies
+RUN npm install
+
+# Copy the rest of the application code
+COPY . .
+
+# Build the React app for production
+RUN npm run build
+
+# Use a lightweight Node.js runtime for the production image
+FROM node:14-slim
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy the build files from the build stage
+COPY --from=build /app/build ./build
+
+# Expose the port your React app will run on (typically 3000)
+EXPOSE 3000
+
+# Define the command to start your React app
+CMD ["npm", "start"]
