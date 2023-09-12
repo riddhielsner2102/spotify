@@ -1,0 +1,45 @@
+name: CI/CD Workflow
+
+on:
+  push:
+    branches:
+      - main  # Adjust the branch name as needed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14  # Adjust the Node.js version as needed
+
+      - name: Install dependencies
+        run: |
+          cd client  # Navigate to the client directory
+          npm install
+          cd ../server  # Navigate to the server directory
+          npm install
+
+      - name: Build the React app
+        working-directory: ./client  # Specify the client directory
+        run: npm run build
+
+      - name: Run tests (replace with your test commands)
+        working-directory: ./server  # Specify the server directory
+        run: npm test
+
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Deploy to Production (replace with your deployment steps)
+        run: |
+          # Add your deployment commands here
